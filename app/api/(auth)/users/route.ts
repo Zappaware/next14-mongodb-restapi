@@ -61,5 +61,33 @@ export const PATCH = async (req: Request) => {
     }
 }
 
+export const DELETE = async (req: Request) => {
+    try{
+        const { searchParams } = new URL(req.url);
+        const userId = searchParams.get('userId');
+
+        if(!userId){
+            return new NextResponse('ID not found', {status: 400});
+        }
+
+        if (!Types.ObjectId.isValid(userId)) {
+            return new NextResponse('Invalid user id', {status: 400});
+        }
+
+        await connect();
+
+        const deletedUser = await User.findByIdAndDelete({_id: new ObjectId(userId)});
+
+        if (!deletedUser) {
+            return new NextResponse(JSON.stringify({message: 'User not found in database'}), {status: 400});
+        }
+
+        return new NextResponse(JSON.stringify({message: 'User deleted successfully', user: deletedUser}), {status: 200});
+
+    } catch (error: any) {
+        return new NextResponse('Error in deleting user' + error.message, {status: 500});
+    }
+}
+
 
 
