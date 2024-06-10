@@ -49,11 +49,12 @@ export const PATCH = async (req: Request) => {
             {username: newUsername},
             {new: true});
 
-        return new NextResponse(JSON.stringify({message: 'User updated successfully', user: updatedUser}), {status: 200});
 
         if (!updatedUser) {
             return new NextResponse(JSON.stringify({message: 'User not found in database'}), {status: 400});
         }
+
+        return new NextResponse(JSON.stringify({message: 'User updated successfully', user: updatedUser}), {status: 200});
 
     } catch (error: any) {
         return new NextResponse('Error in updating user' + error.message, {status: 500});
